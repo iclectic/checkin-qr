@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'storage/hive_setup.dart';
+import 'shared/app_config.dart';
 import 'shared/app_routes.dart';
 import 'shared/app_theme.dart';
 import 'storage/app_settings.dart';
@@ -7,6 +9,12 @@ import 'storage/app_settings.dart';
 Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await HiveSetup.init();
+  if (AppConfig.supabaseConfigured) {
+    await Supabase.initialize(
+      url: AppConfig.supabaseUrl,
+      anonKey: AppConfig.supabaseAnonKey,
+    );
+  }
   runApp(const MeetupCheckInQrApp());
 }
 

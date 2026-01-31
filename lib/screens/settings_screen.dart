@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+import '../shared/app_config.dart';
 import '../shared/snackbars.dart';
 import '../storage/app_settings.dart';
 import '../storage/hive_setup.dart';
@@ -22,6 +23,10 @@ class SettingsScreen extends StatelessWidget {
           final duplicateBehavior = AppSettings.duplicateScanBehavior;
           final dateFormat = AppSettings.dateFormatOption;
           final exportFormat = AppSettings.exportFormatOption;
+          final cloudEnabled = AppSettings.cloudSyncEnabled;
+          final cloudConfigured = AppConfig.supabaseConfigured;
+          final selfCheckInConfigured = AppConfig.selfCheckInConfigured;
+          final cloudActive = cloudEnabled && cloudConfigured;
 
           return ListView(
             padding: const EdgeInsets.all(16),
@@ -98,12 +103,45 @@ class SettingsScreen extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 24),
+              Text('Cloud', style: theme.textTheme.titleMedium),
+              const SizedBox(height: 8),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('Enable cloud sync'),
+                subtitle: Text(
+                  cloudConfigured
+                      ? 'Upload and download check-ins with your Supabase backend.'
+                      : 'Supabase is not configured. Set SUPABASE_URL and SUPABASE_ANON_KEY.',
+                ),
+                value: cloudEnabled,
+                onChanged: cloudConfigured
+                    ? (value) => AppSettings.setCloudSyncEnabled(value)
+                    : null,
+              ),
+              if (!selfCheckInConfigured) ...[
+                const SizedBox(height: 4),
+                Text(
+                  'Self check-in QR requires SELF_CHECKIN_BASE_URL to be set.',
+                  style: theme.textTheme.bodyMedium,
+                ),
+              ] else ...[
+                const SizedBox(height: 4),
+                Text(
+                  'Self check-in URL: ${AppConfig.selfCheckInBaseUrl}',
+                  style: theme.textTheme.bodyMedium,
+                ),
+              ],
+              const SizedBox(height: 24),
               Text('Privacy', style: theme.textTheme.titleMedium),
               const SizedBox(height: 8),
               Text(
-                'Event details and check-ins (including attendee names and optional '
-                'email/company) are stored locally on this device using the app’s '
-                'offline database. No data is uploaded or synced.',
+                cloudActive
+                    ? 'Cloud sync is enabled. Check-ins may be uploaded to your '
+                        'Supabase project during sync. Disable cloud sync to keep '
+                        'all data on this device.'
+                    : 'Event details and check-ins (including attendee names and optional '
+                        'email/company) are stored locally on this device using the app’s '
+                        'offline database. No data is uploaded or synced.',
                 style: theme.textTheme.bodyMedium,
               ),
               const SizedBox(height: 24),

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Event Check-In</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Space+Grotesk:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <div class="badge" id="event-badge">Event check-in</div>
+        <h1 id="page-title">Event check-in</h1>
+        <p id="page-subtitle">
+          Add your details below. Your host will confirm you at the door.
+        </p>
+      </header>
+
+      <form id="checkin-form">
+        <div>
+          <label for="name-input">Your name</label>
+          <input id="name-input" name="name" type="text" autocomplete="name" required />
+        </div>
+        <div id="extras-fields">
+          <label for="email-input">Email (optional)</label>
+          <input
+            id="email-input"
+            name="email"
+            type="email"
+            autocomplete="email"
+            placeholder="you@email.com"
+          />
+        </div>
+        <div id="company-field">
+          <label for="company-input">Company (optional)</label>
+          <input
+            id="company-input"
+            name="company"
+            type="text"
+            autocomplete="organization"
+          />
+        </div>
+        <button id="submit-button" type="submit">Check me in</button>
+        <p class="helper" id="event-helper">Looking for the event? Scan the QR again.</p>
+      </form>
+
+      <div class="status" id="status-box"></div>
+      <div class="footer" id="footer-note">Powered by the event organiser.</div>
+    </main>
+
+    <noscript>
+      <p class="status error">JavaScript is required to submit the check-in.</p>
+    </noscript>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

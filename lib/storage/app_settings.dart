@@ -24,6 +24,7 @@ class AppSettings {
   static const _keyDuplicateScanBehavior = 'duplicate_scan_behavior';
   static const _keyDateFormat = 'date_format';
   static const _keyExportFormat = 'export_format';
+  static const _keyCloudSyncEnabled = 'cloud_sync_enabled';
 
   static Box get _box => Hive.box(HiveSetup.settingsBoxName);
 
@@ -72,5 +73,12 @@ class AppSettings {
 
   static Future<void> setExportFormatOption(ExportFormatOption value) async {
     await _box.put(_keyExportFormat, value.name);
+  }
+
+  static bool get cloudSyncEnabled =>
+      _box.get(_keyCloudSyncEnabled, defaultValue: false) as bool;
+
+  static Future<void> setCloudSyncEnabled(bool value) async {
+    await _box.put(_keyCloudSyncEnabled, value);
   }
 }
