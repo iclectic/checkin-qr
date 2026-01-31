@@ -9,7 +9,7 @@ export clean attendance data when the event is over.
 - Create events with a QR code payload.
 - Scan QR codes or add check-ins manually.
 - Optional attendee name/email/company capture.
-- Duplicate scan protection with configurable behavior.
+- Duplicate scan protection with configurable behaviour.
 - Attendance list with search.
 - CSV export with configurable date and export formats.
 - Offline-first storage (local device only).
