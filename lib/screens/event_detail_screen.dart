@@ -66,405 +66,575 @@ class _EventDetailScreenState extends State<EventDetailScreen> {
                                 final cloudConfigured = AppConfig.supabaseConfigured;
 
                                 return Scaffold(
-                            appBar: AppBar(
-                                title: Text(event.title),
-                                actions: [
-                                    IconButton(
-                                        onPressed: () async {
-                                            await Navigator.pushNamed(
-                                                context,
-                                                AppRoutes.attendance,
-                                                arguments: event.id,
-                                            );
-                                        },
-                                        icon: const Icon(Icons.list),
-                                    ),
-                                    IconButton(
-                                        onPressed: _exporting
-                                            ? null
-                                            : () async {
-                                                setState(() => _exporting = true);
-                                                final checkIns =
-                                                    CheckInRepository().listByEvent(
-                                                        event.id,
-                                                    );
-                                                try {
-                                                    await AttendanceCsvExporter.share(
-                                                        event,
-                                                        checkIns,
-                                                    );
-                                                    if (context.mounted) {
-                                                        showSuccessSnackBar(
-                                                            context,
-                                                            'Export ready to share.',
-                                                        );
-                                                    }
-                                                } catch (_) {
-                                                    if (!context.mounted) return;
-                                                    showErrorSnackBar(
+                                    appBar: AppBar(
+                                        title: Text(event.title),
+                                        actions: [
+                                            IconButton(
+                                                onPressed: () async {
+                                                    await Navigator.pushNamed(
                                                         context,
-                                                        'Failed to export CSV.',
-                                                    );
-                                                } finally {
-                                                    if (mounted) {
-                                                        setState(() => _exporting = false);
-                                                    }
-                                                }
-                                            },
-                                        icon: _exporting
-                                            ? const SizedBox(
-                                                width: 20,
-                                                height: 20,
-                                                child: CircularProgressIndicator(
-                                                    strokeWidth: 2,
-                                                ),
-                                            )
-                                            : const Icon(Icons.share),
-                                    ),
-                                    IconButton(
-                                        onPressed: () async {
-                                            final saved = await Navigator.pushNamed(
-                                                context,
-                                                AppRoutes.scanner,
-                                                arguments: event.id,
-                                            );
-                                            if (!context.mounted) return;
-                                            if (saved == true) {
-                                                showSuccessSnackBar(
-                                                    context,
-                                                    'Check-in saved.',
-                                                );
-                                            }
-                                        },
-                                        icon: const Icon(Icons.qr_code_scanner),
-                                    ),
-                                    IconButton(
-                                        onPressed: () async {
-                                            final saved = await Navigator.pushNamed(
-                                                context,
-                                                AppRoutes.manualCheckIn,
-                                                arguments: event.id,
-                                            );
-                                            if (!context.mounted) return;
-                                            if (saved == true) {
-                                                showSuccessSnackBar(
-                                                    context,
-                                                    'Check-in saved.',
-                                                );
-                                            }
-                                        },
-                                        icon: const Icon(Icons.person_add),
-                                    ),
-                                    IconButton(
-                                        onPressed: () async {
-                                            final confirmed = await showDialog<bool>(
-                                                context: context,
-                                                builder: (context) {
-                                                    return AlertDialog(
-                                                        title: const Text('Delete event?'),
-                                                        content: const Text(
-                                                            'This will permanently remove the event and all associated check-ins.',
-                                                        ),
-                                                        actions: [
-                                                            TextButton(
-                                                                onPressed: () =>
-                                                                    Navigator.pop(
-                                                                        context,
-                                                                        false,
-                                                                    ),
-                                                                child: const Text('Cancel'),
-                                                            ),
-                                                            ElevatedButton(
-                                                                onPressed: () =>
-                                                                    Navigator.pop(
-                                                                        context,
-                                                                        true,
-                                                                    ),
-                                                                child: const Text('Delete'),
-                                                            ),
-                                                        ],
+                                                        AppRoutes.attendance,
+                                                        arguments: event.id,
                                                     );
                                                 },
-                                            );
+                                                icon: const Icon(Icons.list),
+                                            ),
+                                            IconButton(
+                                                onPressed: _exporting
+                                                    ? null
+                                                    : () async {
+                                                        setState(() => _exporting = true);
+                                                        final checkIns =
+                                                            CheckInRepository()
+                                                                .listByEvent(event.id);
+                                                        try {
+                                                            await AttendanceCsvExporter.share(
+                                                                event,
+                                                                checkIns,
+                                                            );
+                                                            if (context.mounted) {
+                                                                showSuccessSnackBar(
+                                                                    context,
+                                                                    'Export ready to share.',
+                                                                );
+                                                            }
+                                                        } catch (_) {
+                                                            if (!context.mounted) return;
+                                                            showErrorSnackBar(
+                                                                context,
+                                                                'Failed to export CSV.',
+                                                            );
+                                                        } finally {
+                                                            if (mounted) {
+                                                                setState(
+                                                                    () => _exporting = false,
+                                                                );
+                                                            }
+                                                        }
+                                                    },
+                                                icon: _exporting
+                                                    ? const SizedBox(
+                                                        width: 20,
+                                                        height: 20,
+                                                        child: CircularProgressIndicator(
+                                                            strokeWidth: 2,
+                                                        ),
+                                                    )
+                                                    : const Icon(Icons.share),
+                                            ),
+                                            IconButton(
+                                                onPressed: () async {
+                                                    final saved =
+                                                        await Navigator.pushNamed(
+                                                            context,
+                                                            AppRoutes.scanner,
+                                                            arguments: event.id,
+                                                        );
+                                                    if (!context.mounted) return;
+                                                    if (saved == true) {
+                                                        showSuccessSnackBar(
+                                                            context,
+                                                            'Check-in saved.',
+                                                        );
+                                                    }
+                                                },
+                                                icon: const Icon(Icons.qr_code_scanner),
+                                            ),
+                                            IconButton(
+                                                onPressed: () async {
+                                                    final saved =
+                                                        await Navigator.pushNamed(
+                                                            context,
+                                                            AppRoutes.manualCheckIn,
+                                                            arguments: event.id,
+                                                        );
+                                                    if (!context.mounted) return;
+                                                    if (saved == true) {
+                                                        showSuccessSnackBar(
+                                                            context,
+                                                            'Check-in saved.',
+                                                        );
+                                                    }
+                                                },
+                                                icon: const Icon(Icons.person_add),
+                                            ),
+                                            IconButton(
+                                                onPressed: () async {
+                                                    final confirmed =
+                                                        await showDialog<bool>(
+                                                            context: context,
+                                                            builder: (context) {
+                                                                return AlertDialog(
+                                                                    title: const Text(
+                                                                        'Delete event?',
+                                                                    ),
+                                                                    content: const Text(
+                                                                        'This will permanently remove the event and all associated check-ins.',
+                                                                    ),
+                                                                    actions: [
+                                                                        TextButton(
+                                                                            onPressed: () =>
+                                                                                Navigator.pop(
+                                                                                    context,
+                                                                                    false,
+                                                                                ),
+                                                                            child: const Text(
+                                                                                'Cancel',
+                                                                            ),
+                                                                        ),
+                                                                        ElevatedButton(
+                                                                            onPressed: () =>
+                                                                                Navigator.pop(
+                                                                                    context,
+                                                                                    true,
+                                                                                ),
+                                                                            child:
+                                                                                const Text(
+                                                                                    'Delete',
+                                                                                ),
+                                                                        ),
+                                                                    ],
+                                                                );
+                                                            },
+                                                        );
 
-                                            if (confirmed != true) return;
+                                                    if (confirmed != true) return;
 
-                                            final checkIns = CheckInRepository();
-                                            final events = EventRepository();
-                                            await checkIns.deleteAllForEvent(event.id);
-                                            await events.deleteEvent(event.id);
-                                            if (context.mounted) Navigator.pop(context);
-                                        },
-                                        icon: const Icon(Icons.delete),
+                                                    final checkIns =
+                                                        CheckInRepository();
+                                                    final events = EventRepository();
+                                                    await checkIns.deleteAllForEvent(
+                                                        event.id,
+                                                    );
+                                                    await events.deleteEvent(event.id);
+                                                    if (context.mounted) {
+                                                        Navigator.pop(context);
+                                                    }
+                                                },
+                                                icon: const Icon(Icons.delete),
+                                            ),
+                                        ],
                                     ),
-                                ],
-                            ),
-                            body: Padding(
-                                padding: const EdgeInsets.all(16),
-                                child: SingleChildScrollView(
-                                    child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                            Text(
-                                                event.location,
-                                                style: theme.textTheme.titleMedium,
-                                            ),
-                                            const SizedBox(height: 4),
-                                            Text(
-                                                formatDateTime(event.dateTime),
-                                                style: theme.textTheme.bodyMedium,
-                                            ),
-                                            const SizedBox(height: 12),
-                                            Text(
-                                                'Check-ins: $checkInCount',
-                                                style: theme.textTheme.titleMedium,
-                                            ),
-                                            const SizedBox(height: 8),
-                                            if (recent.isNotEmpty)
-                                                ...recent.map(
-                                                    (CheckIn c) => Text(
-                                                        '${c.attendeeName ?? 'Anonymous'} · ${formatDateTime(c.timestamp)}',
-                                                    ),
-                                                )
-                                            else
-                                                Row(
-                                                    children: [
-                                                        const Icon(Icons.group_outlined),
-                                                        const SizedBox(width: 8),
-                                                        Text(
-                                                            'No check-ins yet.',
-                                                            style: theme
-                                                                .textTheme
-                                                                .bodyMedium,
-                                                        ),
-                                                    ],
-                                                ),
-                                            const SizedBox(height: 20),
-                                            Text(
-                                                'Organizer QR',
-                                                style: theme.textTheme.titleMedium,
-                                            ),
-                                            const SizedBox(height: 8),
-                                            Center(
-                                                child: Container(
-                                                    padding: const EdgeInsets.all(12),
-                                                    decoration: BoxDecoration(
-                                                        border: Border.all(width: 1),
-                                                        borderRadius:
-                                                            BorderRadius.circular(12),
-                                                    ),
-                                                    child: QrImageView(
-                                                        data: event.qrPayload(),
-                                                        size: 220,
-                                                    ),
-                                                ),
-                                            ),
-                                            const SizedBox(height: 12),
-                                            Center(
-                                                child: Text(
-                                                    'Payload: ${event.qrPayload()}',
-                                                    textAlign: TextAlign.center,
-                                                ),
-                                            ),
-                                            const SizedBox(height: 24),
-                                            Text(
-                                                'Attendee self check-in',
-                                                style: theme.textTheme.titleMedium,
-                                            ),
-                                            const SizedBox(height: 8),
-                                            if (selfCheckInUrl == null)
-                                                Row(
-                                                    children: [
-                                                        const Icon(Icons.link_off),
-                                                        const SizedBox(width: 8),
-                                                        Expanded(
-                                                            child: Text(
-                                                                'Set SELF_CHECKIN_BASE_URL to enable the attendee check-in QR.',
-                                                                style: theme.textTheme
-                                                                    .bodyMedium,
-                                                            ),
-                                                        ),
-                                                    ],
-                                                )
-                                            else
-                                                Container(
-                                                    padding: const EdgeInsets.all(12),
-                                                    decoration: BoxDecoration(
-                                                        border: Border.all(
-                                                            width: 1,
-                                                            color: theme
-                                                                .colorScheme
-                                                                .outlineVariant,
-                                                        ),
-                                                        borderRadius:
-                                                            BorderRadius.circular(12),
-                                                    ),
-                                                    child: Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment.center,
-                                                        children: [
-                                                            Text(
-                                                                'Attendees can scan this QR to open the hosted check-in form.',
-                                                                textAlign: TextAlign.center,
-                                                                style: theme
-                                                                    .textTheme
-                                                                    .bodyMedium,
-                                                            ),
-                                                            const SizedBox(height: 12),
-                                                            QrImageView(
-                                                                data: selfCheckInUrl,
-                                                                size: 200,
-                                                            ),
-                                                            const SizedBox(height: 12),
-                                                            SelectableText(
-                                                                selfCheckInUrl,
-                                                                textAlign: TextAlign.center,
-                                                                style: theme.textTheme.bodySmall,
-                                                            ),
-                                                            const SizedBox(height: 12),
-                                                            Wrap(
-                                                                spacing: 8,
-                                                                runSpacing: 8,
-                                                                alignment:
-                                                                    WrapAlignment.center,
-                                                                children: [
-                                                                    OutlinedButton.icon(
-                                                                        onPressed: () =>
-                                                                            _copyLink(
-                                                                                selfCheckInUrl,
-                                                                            ),
-                                                                        icon: const Icon(
-                                                                            Icons.copy,
-                                                                        ),
-                                                                        label: const Text(
-                                                                            'Copy link',
-                                                                        ),
-                                                                    ),
-                                                                    OutlinedButton.icon(
-                                                                        onPressed: () =>
-                                                                            _shareLink(
-                                                                                selfCheckInUrl,
-                                                                            ),
-                                                                        icon: const Icon(
-                                                                            Icons.share,
-                                                                        ),
-                                                                        label: const Text(
-                                                                            'Share link',
-                                                                        ),
-                                                                    ),
-                                                                ],
-                                                            ),
-                                                        ],
-                                                    ),
-                                                ),
-                                            const SizedBox(height: 24),
-                                            Text(
-                                                'Cloud sync',
-                                                style: theme.textTheme.titleMedium,
-                                            ),
-                                            const SizedBox(height: 8),
-                                            if (!cloudConfigured)
-                                                Row(
-                                                    children: [
-                                                        const Icon(Icons.cloud_off),
-                                                        const SizedBox(width: 8),
-                                                        Expanded(
-                                                            child: Text(
-                                                                'Set SUPABASE_URL and SUPABASE_ANON_KEY to enable cloud sync.',
-                                                                style: theme.textTheme
-                                                                    .bodyMedium,
-                                                            ),
-                                                        ),
-                                                    ],
-                                                )
-                                            else if (!AppSettings.cloudSyncEnabled)
-                                                Row(
-                                                    children: [
-                                                        const Icon(Icons.cloud_queue),
-                                                        const SizedBox(width: 8),
-                                                        Expanded(
-                                                            child: Text(
-                                                                'Enable cloud sync in Settings to pull attendee check-ins.',
-                                                                style: theme.textTheme
-                                                                    .bodyMedium,
-                                                            ),
-                                                        ),
-                                                    ],
-                                                )
-                                            else
-                                                Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
-                                                    children: [
-                                                        Text(
-                                                            'Sync check-ins from the hosted form and keep cloud exports up to date.',
-                                                            style: theme.textTheme.bodyMedium,
-                                                        ),
-                                                        const SizedBox(height: 12),
-                                                        Wrap(
-                                                            spacing: 8,
-                                                            runSpacing: 8,
+                                    body: SingleChildScrollView(
+                                        padding: const EdgeInsets.all(16),
+                                        child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                                Card(
+                                                    child: Padding(
+                                                        padding:
+                                                            const EdgeInsets.all(16),
+                                                        child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment.start,
                                                             children: [
-                                                                ElevatedButton.icon(
-                                                                    onPressed: _syncing
-                                                                        ? null
-                                                                        : () => _syncCloud(
-                                                                            event,
+                                                                Row(
+                                                                    children: [
+                                                                        Icon(
+                                                                            Icons
+                                                                                .location_on,
+                                                                            size: 20,
+                                                                            color: theme
+                                                                                .colorScheme
+                                                                                .primary,
                                                                         ),
-                                                                    icon: _syncing
-                                                                        ? const SizedBox(
-                                                                            width: 18,
-                                                                            height: 18,
-                                                                            child:
-                                                                                CircularProgressIndicator(
-                                                                                    strokeWidth:
-                                                                                        2,
-                                                                                ),
-                                                                        )
-                                                                        : const Icon(
-                                                                            Icons.sync,
+                                                                        const SizedBox(
+                                                                            width: 8,
                                                                         ),
-                                                                    label: Text(
-                                                                        _syncing
-                                                                            ? 'Syncing...'
-                                                                            : 'Sync now',
-                                                                    ),
+                                                                        Expanded(
+                                                                            child: Text(
+                                                                                event.location,
+                                                                                style: theme
+                                                                                    .textTheme
+                                                                                    .titleMedium,
+                                                                            ),
+                                                                        ),
+                                                                    ],
                                                                 ),
-                                                                OutlinedButton.icon(
-                                                                    onPressed:
-                                                                        _cloudExporting
-                                                                            ? null
-                                                                            : () =>
-                                                                                _exportCloud(
-                                                                                    event,
-                                                                                ),
-                                                                    icon: _cloudExporting
-                                                                        ? const SizedBox(
-                                                                            width: 18,
-                                                                            height: 18,
-                                                                            child:
-                                                                                CircularProgressIndicator(
-                                                                                    strokeWidth:
-                                                                                        2,
-                                                                                ),
-                                                                        )
-                                                                        : const Icon(
-                                                                            Icons.cloud_download,
+                                                                const SizedBox(
+                                                                    height: 8,
+                                                                ),
+                                                                Row(
+                                                                    children: [
+                                                                        Icon(
+                                                                            Icons.schedule,
+                                                                            size: 20,
+                                                                            color: theme
+                                                                                .colorScheme
+                                                                                .primary,
                                                                         ),
-                                                                    label: Text(
-                                                                        _cloudExporting
-                                                                            ? 'Exporting...'
-                                                                            : 'Export cloud CSV',
-                                                                    ),
+                                                                        const SizedBox(
+                                                                            width: 8,
+                                                                        ),
+                                                                        Text(
+                                                                            formatDateTime(
+                                                                                event
+                                                                                    .dateTime,
+                                                                            ),
+                                                                            style: theme
+                                                                                .textTheme
+                                                                                .bodyMedium,
+                                                                        ),
+                                                                    ],
                                                                 ),
                                                             ],
                                                         ),
-                                                    ],
+                                                    ),
                                                 ),
-                                        ],
+                                                const SizedBox(height: 12),
+                                                Card(
+                                                    child: Padding(
+                                                        padding:
+                                                            const EdgeInsets.all(16),
+                                                        child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment.start,
+                                                            children: [
+                                                                Row(
+                                                                    children: [
+                                                                        Icon(
+                                                                            Icons.people,
+                                                                            size: 20,
+                                                                            color: theme
+                                                                                .colorScheme
+                                                                                .primary,
+                                                                        ),
+                                                                        const SizedBox(
+                                                                            width: 8,
+                                                                        ),
+                                                                        Text(
+                                                                            'Check-ins: $checkInCount',
+                                                                            style: theme
+                                                                                .textTheme
+                                                                                .titleMedium,
+                                                                        ),
+                                                                    ],
+                                                                ),
+                                                                const SizedBox(
+                                                                    height: 8,
+                                                                ),
+                                                                if (recent.isNotEmpty)
+                                                                    ...recent.map(
+                                                                        (CheckIn c) =>
+                                                                            Padding(
+                                                                                padding:
+                                                                                    const EdgeInsets
+                                                                                        .only(
+                                                                                        bottom:
+                                                                                            4,
+                                                                                    ),
+                                                                                child: Text(
+                                                                                    '${c.attendeeName ?? 'Anonymous'} · ${formatDateTime(c.timestamp)}',
+                                                                                    style: theme
+                                                                                        .textTheme
+                                                                                        .bodyMedium,
+                                                                                ),
+                                                                            ),
+                                                                    )
+                                                                else
+                                                                    Text(
+                                                                        'No check-ins yet.',
+                                                                        style: theme
+                                                                            .textTheme
+                                                                            .bodyMedium,
+                                                                    ),
+                                                            ],
+                                                        ),
+                                                    ),
+                                                ),
+                                                const SizedBox(height: 12),
+                                                Card(
+                                                    child: Padding(
+                                                        padding:
+                                                            const EdgeInsets.all(16),
+                                                        child: Column(
+                                                            children: [
+                                                                Row(
+                                                                    children: [
+                                                                        Icon(
+                                                                            Icons.qr_code,
+                                                                            size: 20,
+                                                                            color: theme
+                                                                                .colorScheme
+                                                                                .primary,
+                                                                        ),
+                                                                        const SizedBox(
+                                                                            width: 8,
+                                                                        ),
+                                                                        Text(
+                                                                            'Organizer QR',
+                                                                            style: theme
+                                                                                .textTheme
+                                                                                .titleMedium,
+                                                                        ),
+                                                                    ],
+                                                                ),
+                                                                const SizedBox(
+                                                                    height: 12,
+                                                                ),
+                                                                QrImageView(
+                                                                    data: event.qrPayload(),
+                                                                    size: 200,
+                                                                ),
+                                                                const SizedBox(
+                                                                    height: 8,
+                                                                ),
+                                                                Text(
+                                                                    event.qrPayload(),
+                                                                    textAlign:
+                                                                        TextAlign.center,
+                                                                    style: theme
+                                                                        .textTheme
+                                                                        .bodySmall,
+                                                                ),
+                                                            ],
+                                                        ),
+                                                    ),
+                                                ),
+                                                const SizedBox(height: 12),
+                                                Card(
+                                                    child: Padding(
+                                                        padding:
+                                                            const EdgeInsets.all(16),
+                                                        child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment.start,
+                                                            children: [
+                                                                Row(
+                                                                    children: [
+                                                                        Icon(
+                                                                            Icons.link,
+                                                                            size: 20,
+                                                                            color: theme
+                                                                                .colorScheme
+                                                                                .primary,
+                                                                        ),
+                                                                        const SizedBox(
+                                                                            width: 8,
+                                                                        ),
+                                                                        Text(
+                                                                            'Attendee self check-in',
+                                                                            style: theme
+                                                                                .textTheme
+                                                                                .titleMedium,
+                                                                        ),
+                                                                    ],
+                                                                ),
+                                                                const SizedBox(
+                                                                    height: 12,
+                                                                ),
+                                                                if (selfCheckInUrl ==
+                                                                    null)
+                                                                    Text(
+                                                                        'Set SELF_CHECKIN_BASE_URL to enable the attendee check-in QR.',
+                                                                        style: theme
+                                                                            .textTheme
+                                                                            .bodyMedium,
+                                                                    )
+                                                                else
+                                                                    Column(
+                                                                        children: [
+                                                                            Text(
+                                                                                'Attendees can scan this QR to open the hosted check-in form.',
+                                                                                textAlign:
+                                                                                    TextAlign
+                                                                                        .center,
+                                                                                style: theme
+                                                                                    .textTheme
+                                                                                    .bodyMedium,
+                                                                            ),
+                                                                            const SizedBox(
+                                                                                height: 12,
+                                                                            ),
+                                                                            QrImageView(
+                                                                                data:
+                                                                                    selfCheckInUrl,
+                                                                                size: 180,
+                                                                            ),
+                                                                            const SizedBox(
+                                                                                height: 8,
+                                                                            ),
+                                                                            SelectableText(
+                                                                                selfCheckInUrl,
+                                                                                textAlign:
+                                                                                    TextAlign
+                                                                                        .center,
+                                                                                style: theme
+                                                                                    .textTheme
+                                                                                    .bodySmall,
+                                                                            ),
+                                                                            const SizedBox(
+                                                                                height: 12,
+                                                                            ),
+                                                                            Wrap(
+                                                                                spacing: 8,
+                                                                                runSpacing: 8,
+                                                                                alignment:
+                                                                                    WrapAlignment
+                                                                                        .center,
+                                                                                children: [
+                                                                                    OutlinedButton
+                                                                                        .icon(
+                                                                                            onPressed: () =>
+                                                                                                _copyLink(
+                                                                                                    selfCheckInUrl,
+                                                                                                ),
+                                                                                            icon: const Icon(
+                                                                                                Icons.copy,
+                                                                                            ),
+                                                                                            label: const Text(
+                                                                                                'Copy link',
+                                                                                            ),
+                                                                                        ),
+                                                                                    OutlinedButton
+                                                                                        .icon(
+                                                                                            onPressed: () =>
+                                                                                                _shareLink(
+                                                                                                    selfCheckInUrl,
+                                                                                                ),
+                                                                                            icon: const Icon(
+                                                                                                Icons.share,
+                                                                                            ),
+                                                                                            label: const Text(
+                                                                                                'Share link',
+                                                                                            ),
+                                                                                        ),
+                                                                                ],
+                                                                            ),
+                                                                        ],
+                                                                    ),
+                                                            ],
+                                                        ),
+                                                    ),
+                                                ),
+                                                const SizedBox(height: 12),
+                                                Card(
+                                                    child: Padding(
+                                                        padding:
+                                                            const EdgeInsets.all(16),
+                                                        child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment.start,
+                                                            children: [
+                                                                Row(
+                                                                    children: [
+                                                                        Icon(
+                                                                            Icons.cloud,
+                                                                            size: 20,
+                                                                            color: theme
+                                                                                .colorScheme
+                                                                                .primary,
+                                                                        ),
+                                                                        const SizedBox(
+                                                                            width: 8,
+                                                                        ),
+                                                                        Text(
+                                                                            'Cloud sync',
+                                                                            style: theme
+                                                                                .textTheme
+                                                                                .titleMedium,
+                                                                        ),
+                                                                    ],
+                                                                ),
+                                                                const SizedBox(
+                                                                    height: 12,
+                                                                ),
+                                                                if (!cloudConfigured)
+                                                                    Text(
+                                                                        'Set SUPABASE_URL and SUPABASE_ANON_KEY to enable cloud sync.',
+                                                                        style: theme
+                                                                            .textTheme
+                                                                            .bodyMedium,
+                                                                    )
+                                                                else if (!AppSettings
+                                                                    .cloudSyncEnabled)
+                                                                    Text(
+                                                                        'Enable cloud sync in Settings to pull attendee check-ins.',
+                                                                        style: theme
+                                                                            .textTheme
+                                                                            .bodyMedium,
+                                                                    )
+                                                                else
+                                                                    Column(
+                                                                        crossAxisAlignment:
+                                                                            CrossAxisAlignment
+                                                                                .start,
+                                                                        children: [
+                                                                            Text(
+                                                                                'Sync check-ins from the hosted form and keep cloud exports up to date.',
+                                                                                style: theme
+                                                                                    .textTheme
+                                                                                    .bodyMedium,
+                                                                            ),
+                                                                            const SizedBox(
+                                                                                height: 12,
+                                                                            ),
+                                                                            Wrap(
+                                                                                spacing: 8,
+                                                                                runSpacing: 8,
+                                                                                children: [
+                                                                                    ElevatedButton
+                                                                                        .icon(
+                                                                                            onPressed: _syncing
+                                                                                                ? null
+                                                                                                : () =>
+                                                                                                    _syncCloud(
+                                                                                                        event,
+                                                                                                    ),
+                                                                                            icon: _syncing
+                                                                                                ? const SizedBox(
+                                                                                                    width: 18,
+                                                                                                    height: 18,
+                                                                                                    child: CircularProgressIndicator(
+                                                                                                        strokeWidth: 2,
+                                                                                                    ),
+                                                                                                )
+                                                                                                : const Icon(
+                                                                                                    Icons.sync,
+                                                                                                ),
+                                                                                            label: Text(
+                                                                                                _syncing
+                                                                                                    ? 'Syncing...'
+                                                                                                    : 'Sync now',
+                                                                                            ),
+                                                                                        ),
+                                                                                    OutlinedButton
+                                                                                        .icon(
+                                                                                            onPressed: _cloudExporting
+                                                                                                ? null
+                                                                                                : () =>
+                                                                                                    _exportCloud(
+                                                                                                        event,
+                                                                                                    ),
+                                                                                            icon: _cloudExporting
+                                                                                                ? const SizedBox(
+                                                                                                    width: 18,
+                                                                                                    height: 18,
+                                                                                                    child: CircularProgressIndicator(
+                                                                                                        strokeWidth: 2,
+                                                                                                    ),
+                                                                                                )
+                                                                                                : const Icon(
+                                                                                                    Icons.cloud_download,
+                                                                                                ),
+                                                                                            label: Text(
+                                                                                                _cloudExporting
+                                                                                                    ? 'Exporting...'
+                                                                                                    : 'Export cloud CSV',
+                                                                                            ),
+                                                                                        ),
+                                                                                ],
+                                                                            ),
+                                                                        ],
+                                                                    ),
+                                                            ],
+                                                        ),
+                                                    ),
+                                                ),
+                                            ],
+                                        ),
                                     ),
-                                ),
-                            ),
                                 );
                             },
                         );

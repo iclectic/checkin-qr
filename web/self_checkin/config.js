@@ -6,5 +6,6 @@ window.CHECKIN_CONFIG = {
   enableExtras: true,
   title: 'Event check-in',
   subtitle: 'Add your details below. Your host will confirm you at the door.',
-  footerNote: 'Powered by the event organiser.',
+  footerNote: 'Powered by Iclectic.',
+  logoUrl: './assets/images/checkin_logo.png',
 };

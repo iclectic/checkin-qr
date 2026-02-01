@@ -103,6 +103,28 @@ class SettingsScreen extends StatelessWidget {
                 },
               ),
               const SizedBox(height: 24),
+              Text('Appearance', style: theme.textTheme.titleMedium),
+              const SizedBox(height: 8),
+              DropdownButtonFormField<ThemeModeOption>(
+                value: AppSettings.themeModeOption,
+                decoration: const InputDecoration(
+                  labelText: 'Theme',
+                  border: OutlineInputBorder(),
+                ),
+                items: ThemeModeOption.values
+                    .map(
+                      (value) => DropdownMenuItem(
+                        value: value,
+                        child: Text(_themeModeLabel(value)),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  if (value == null) return;
+                  AppSettings.setThemeModeOption(value);
+                },
+              ),
+              const SizedBox(height: 24),
               Text('Cloud', style: theme.textTheme.titleMedium),
               const SizedBox(height: 8),
               SwitchListTile(
@@ -220,6 +242,17 @@ class SettingsScreen extends StatelessWidget {
         return 'CSV (standard)';
       case ExportFormatOption.csvWithExtras:
         return 'CSV (include email & company)';
+    }
+  }
+
+  String _themeModeLabel(ThemeModeOption option) {
+    switch (option) {
+      case ThemeModeOption.system:
+        return 'System default';
+      case ThemeModeOption.light:
+        return 'Light';
+      case ThemeModeOption.dark:
+        return 'Dark';
     }
   }
 }

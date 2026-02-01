@@ -10,6 +10,7 @@
   const helper = document.getElementById('event-helper');
   const extrasFields = document.getElementById('extras-fields');
   const companyField = document.getElementById('company-field');
+  const logo = document.getElementById('logo');
 
   const setStatus = (message, isError = false) => {
     statusBox.textContent = message;
@@ -39,6 +40,10 @@
   }
   if (config.footerNote) {
     document.getElementById('footer-note').textContent = config.footerNote;
+  }
+  if (config.logoUrl && logo) {
+    logo.src = config.logoUrl;
+    logo.style.display = 'block';
   }
 
   if (!config.enableExtras) {

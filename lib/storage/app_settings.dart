@@ -18,6 +18,12 @@ enum ExportFormatOption {
   csvWithExtras,
 }
 
+enum ThemeModeOption {
+  system,
+  light,
+  dark,
+}
+
 class AppSettings {
   static const _keyOnboardingSeen = 'onboarding_seen';
   static const _keyEnableNameCapture = 'enable_name_capture';
@@ -25,6 +31,7 @@ class AppSettings {
   static const _keyDateFormat = 'date_format';
   static const _keyExportFormat = 'export_format';
   static const _keyCloudSyncEnabled = 'cloud_sync_enabled';
+  static const _keyThemeMode = 'theme_mode';
 
   static Box get _box => Hive.box(HiveSetup.settingsBoxName);
 
@@ -80,5 +87,15 @@ class AppSettings {
 
   static Future<void> setCloudSyncEnabled(bool value) async {
     await _box.put(_keyCloudSyncEnabled, value);
+  }
+
+  static ThemeModeOption get themeModeOption {
+    final raw = _box.get(_keyThemeMode, defaultValue: 'system') as String;
+    return ThemeModeOption.values
+        .firstWhere((e) => e.name == raw, orElse: () => ThemeModeOption.system);
+  }
+
+  static Future<void> setThemeModeOption(ThemeModeOption value) async {
+    await _box.put(_keyThemeMode, value.name);
   }
 }

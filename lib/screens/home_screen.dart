@@ -16,11 +16,20 @@ class HomeScreen extends StatelessWidget {
 
         return Scaffold(
         appBar: AppBar(
-            title: const Text('Events'),
+            title: Row(
+                children: [
+                    Image.asset(
+                        'assets/images/checkin_logo.png',
+                        height: 28,
+                    ),
+                    const SizedBox(width: 8),
+                    const Text('Events'),
+                ],
+            ),
             actions: [
                 IconButton(
                     onPressed: () async {
-                        await Navigator.pushNamed(context, AppRoutes.settings);
+                        await Navigator.pushNamed(context, AppRoutes.settingsRoute);
                     },
                     icon: const Icon(Icons.settings),
                 ),

@@ -16,7 +16,7 @@ class AppRoutes {
   static const attendance = '/attendance';
   static const scanner = '/scanner';
   static const manualCheckIn = '/manual-check-in';
-  static const settings = '/settings';
+  static const settingsRoute = '/settings';
   static const onboarding = '/onboarding';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -47,7 +47,7 @@ class AppRoutes {
         return MaterialPageRoute(
           builder: (_) => ManualCheckInScreen(eventId: eventId),
         );
-      case settings:
+      case settingsRoute:
         return MaterialPageRoute(builder: (_) => const SettingsScreen());
       default:
         return MaterialPageRoute(
